@@ -1,0 +1,3 @@
+Needs:
+	paulstoffregen/OneWire
+	milesburton/DallasTemperature
