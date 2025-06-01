@@ -6,8 +6,9 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <limits>  // For NaN values
+#include "LoggingBase.h"
 
-#define TDS_OVERSAMPLING 10
+#define TDS_OVERSAMPLING 20
 
 class TDSSensor {
     
@@ -31,21 +32,24 @@ public:
     // returns the last measured TDS value
     float getTDS() { return TDS; }
     float getEC(){return TDS*0.001428571429;} // calibrate; this is what's actually measured 1/(0.7*1000) here
-
+    float getRawTDS() { return rawTDS; } // returns the last measured TDS value at reference temperature
+    float getRawEC(){return rawTDS*0.001428571429;} // calibrate; this is what's actually measured 1/(0.7*1000) here
     // returns the last measured temperature value
     float getTemperature() { return temperature; }
 
 private:
+    static constexpr float REF_TEMP = 20.;  // Invalid temperature value
     OneWire oneWire;
     DallasTemperature sensors;
     int powerPin, adcPin;
     float temperature = -127;
     float TDS = -1;
+    float rawTDS = -1;
     float adcValue = 0;
 
     void turnOnTDS() { digitalWrite(powerPin, HIGH); }
 
-    float ADCtoTDS(float ADCValue, float temperature);
+    float ADCtoTDS(float ADCValue, float temperature=REF_TEMP);
     float calibrateTDStoTemperature(float TDS, float temperature);
 };
 
