@@ -6,7 +6,6 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <limits>  // For NaN values
-#include "Log.h"
 
 #define EC_OVERSAMPLING 10
 

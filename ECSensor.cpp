@@ -2,6 +2,7 @@
 #include <ECSensor.h>
 #include <cmath>
 #include <algorithm> 
+#include "LoggingBase.h"
 
 void ECSensor::begin() {
         sensors.begin();
@@ -29,7 +30,7 @@ void ECSensor::begin() {
         delay(30);//wait for ADC to stabilize
         int rawADC = adc1_get_raw((adc1_channel_t) digitalPinToAnalogChannel(adcPin));
         if (rawADC < 0 || rawADC > 4095) {
-            webLog.addToLog("Error: ADC reading out of range!");
+            gLogger->println("Error: ADC reading out of range!");
             digitalWrite(powerPin, LOW);
             EC = -1;  // Use NaN for invalid readings
             break;
@@ -57,7 +58,7 @@ void ECSensor::updateTemperature(){
     temperature = sensors.getTempCByIndex(0);
 
     if (temperature == DEVICE_DISCONNECTED_C) {  // Clearly invalid for water
-         webLog.addToLog("Error: DS18B20 temperature sensor not detected or faulty!");
+         gLogger->println("Error: DS18B20 temperature sensor not detected or faulty!");
          temperature = -127;  // Mark as invalid
     }
 }
