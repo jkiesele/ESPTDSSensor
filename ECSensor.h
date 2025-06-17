@@ -7,7 +7,7 @@
 #include <DallasTemperature.h>
 #include <limits>  // For NaN values
 
-#define EC_OVERSAMPLING 10
+#define EC_OVERSAMPLING 4
 
 class ECSensor {
     

@@ -27,7 +27,7 @@ void ECSensor::begin() {
      float ADCValue = 0;
      EC = 1;
      for (int i = 0; i < EC_OVERSAMPLING; i++) {
-        delay(30);//wait for ADC to stabilize
+        delay(2);//wait for ADC to stabilize
         int rawADC = adc1_get_raw((adc1_channel_t) digitalPinToAnalogChannel(adcPin));
         if (rawADC < 0 || rawADC > 4095) {
             gLogger->println("Error: ADC reading out of range!");
@@ -67,7 +67,7 @@ void ECSensor::update() {
     turnOnEC();
     updateTemperature();
     // Stabilization time for TDS sensor, shorter since we took time reading temperature
-    delay(800); 
+    delay(40); 
     updateEC();
 }
 
