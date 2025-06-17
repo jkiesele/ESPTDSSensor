@@ -36,6 +36,12 @@ public:
     // returns the last measured temperature value
     float getTemperature() { return temperature; }
 
+    void setProbeGain(double gain);
+    double getProbeGain() const { return probeGain; }
+
+    void setSeriesEC(double seriesEC);
+    double getSeriesEC() const { return seriesEC; }
+
 private:
     static constexpr float REF_TEMP = 20.;  // Invalid temperature value
     OneWire oneWire;
@@ -45,6 +51,8 @@ private:
     float EC = -1;
     float rawEC = -1;
     float rawADC = 0;
+    double probeGain = 0.588055892647049; // Gain of the EC probe, can be adjusted based on calibration
+    double seriesEC = 1.0 - 0.0911175171588055; // Series EC of the series resistor, adjust if needed
 
     void turnOnEC() { digitalWrite(powerPin, HIGH); }
     void turnOffEC() { digitalWrite(powerPin, LOW); }

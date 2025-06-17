@@ -71,39 +71,34 @@ void ECSensor::update() {
     updateEC();
 }
 
+void ECSensor::setProbeGain(double gain) {
+    if (gain > 0) {
+        probeGain = gain;
+    } else {
+        gLogger->println("Invalid gain value. Gain must be positive.");
+    }
+}
+
+void ECSensor::setSeriesEC(double seriesEC) {
+    if (seriesEC > 0) {
+        this->seriesEC = seriesEC;
+    } else {
+        gLogger->println("Invalid series EC value. Series EC must be positive.");
+    }
+}
+
 static inline double ec_temp_correction(double ec, double temp, double a1) {
     return ec / (1.0 + a1 * (temp - 25.0));
 }
 
-float ECSensor::ADCtoEC(float ADCValue, float temp) {
-    constexpr double adc0 = 0.0005158386900113605;
-    constexpr double adc1 = 6.622970656294487e-25;
-    constexpr double adc2 = 19.409747146224944;
-    constexpr double a1   = 0.019;
+float ECSensor::ADCtoEC(float adc, float temp) {
 
-    double adc = ADCValue;
-    double temperature = temp;
+    // series EC of the series resistor 
+    double b = seriesEC;
+    double a = probeGain; // for std sensor gain should be one
 
-    // Linear part
-    double ec = adc0 * adc;
-
-    // Exponential part, safely clipped
-    double exp_arg = adc2 * (adc / 1000.0);
-    //safety
-    if(exp_arg<-700) exp_arg = -700;
-    if(exp_arg>700) exp_arg = 700;
-    double exp_part = adc1 * (std::exp(exp_arg) - 1.0);
-
-    // Switch to linear‐fallback above ADC ≈ 2857
-    constexpr double linear_slope = (2.5 - 2.3) / (2867.0 - 2857.0);
-    if (adc > 2857) {
-        // linear interp between (2857, 2.3) and (2867, 2.5)
-        ec = linear_slope * (adc - 2857) + 2.3;
-    } else {
-        ec += exp_part;
-    }
-
-    // Temperature correction
-    double corr = ec_temp_correction(ec, temp, a1);
-    return static_cast<float>(corr);
+    double ec_tot = a * adc / 1000.;
+    double ec = 1 / ( 1/ec_tot - 1/b);
+    ec = ec_temp_correction(ec, static_cast<double>(temp), 0.019);
+    return static_cast<float>(ec);
 }
