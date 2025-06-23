@@ -20,31 +20,31 @@ void ECSensor::begin() {
     //check if turned on
     if(digitalRead(powerPin) == LOW){
         turnOnEC();
-        delay(1000);  // Stabilization time 
+        delay(600);  // Stabilization time 
     }
 
      // Oversampling for stability
      float ADCValue = 0;
      EC = 1;
      for (int i = 0; i < EC_OVERSAMPLING; i++) {
-        delay(2);//wait for ADC to stabilize
-        int rawADC = adc1_get_raw((adc1_channel_t) digitalPinToAnalogChannel(adcPin));
-        if (rawADC < 0 || rawADC > 4095) {
+        delay(10);//wait for ADC to stabilize
+        int thisADC = adc1_get_raw((adc1_channel_t) digitalPinToAnalogChannel(adcPin));
+        if (thisADC < 0 || thisADC > 4095) {
             gLogger->println("Error: ADC reading out of range!");
-            digitalWrite(powerPin, LOW);
             EC = -1;  // Use NaN for invalid readings
             break;
         }
-        ADCValue += rawADC;
+        ADCValue += thisADC;
      }
-     ADCValue /= (float)EC_OVERSAMPLING;
+     
 
      turnOffEC();
 
      if(EC >= 0){
-       EC = ADCtoEC(ADCValue, temperature);
-       rawEC = ADCtoEC(ADCValue);//at reference temperature
-       rawADC = ADCValue;  // Store raw ADC value
+        ADCValue /= (float)EC_OVERSAMPLING;
+        EC = ADCtoEC(ADCValue, temperature);
+        rawEC = ADCtoEC(ADCValue);//at reference temperature
+        rawADC = ADCValue;  // Store raw ADC value
      }
     else{
         EC = -1;  // Use NaN for invalid readings
@@ -64,10 +64,12 @@ void ECSensor::updateTemperature(){
 }
 
 void ECSensor::update() {
+    uint32_t startTime = millis();
     turnOnEC();
     updateTemperature();
     // Stabilization time for TDS sensor, shorter since we took time reading temperature
-    delay(40); 
+    uint32_t stabilizationTime = 600 - (millis() - startTime);
+    delay(stabilizationTime > 0 ? stabilizationTime : 0);  // Ensure we don't delay negative time
     updateEC();
 }
 

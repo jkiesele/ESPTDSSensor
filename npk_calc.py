@@ -97,7 +97,7 @@ tomatoes_fruit = PlantRequirements("Tomatoes Fruit", 1.5, 0.7, 2.5, 2.0)
 # Gurke (gesamtes Kulturfenster – braucht viel K, moderaten N, wenig P)
 cucumbers      = PlantRequirements("Cucumbers"     , 2, 0.7, 3, 1.8)
 
-tom_cuc_grow = PlantRequirements("Tom Cuc Grow" , 2, 1, 3, 1.8)
+tom_cuc_grow = PlantRequirements("Tom Cuc Grow" , 1.5, 1, 4, 1.8)
 tom_cuc_fruit = PlantRequirements("Tom Cuc Fruit", 1.7, 0.7, 4, 2.0)
 
 import argparse
