@@ -43,7 +43,7 @@ public:
     double getSeriesEC() const { return seriesEC; }
 
 private:
-    static constexpr float REF_TEMP = 20.;  // Invalid temperature value
+    static constexpr float REF_TEMP = 25.;  // Invalid temperature value
     OneWire oneWire;
     DallasTemperature sensors;
     int powerPin, adcPin;
