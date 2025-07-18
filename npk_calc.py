@@ -98,7 +98,9 @@ tomatoes_fruit = PlantRequirements("Tomatoes Fruit", 1.5, 0.7, 2.5, 2.0)
 cucumbers      = PlantRequirements("Cucumbers"     , 2, 0.7, 3, 1.8)
 
 tom_cuc_grow = PlantRequirements("Tom Cuc Grow" , 1.5, 1, 4, 1.8)
-tom_cuc_fruit = PlantRequirements("Tom Cuc Fruit", 1.7, 0.7, 4, 2.0)
+tom_cuc_fruit = PlantRequirements("Tom Cuc Fruit", 2., 0.7, 3.8, 2.0)
+
+herbs = PlantRequirements("Herbs", 1, 0.1, 2, 0.7)
 
 import argparse
 
@@ -125,6 +127,7 @@ if __name__ == "__main__":
         "buntnessel": buntnessel,
         "tom_cuc_grow": tom_cuc_grow,
         "tom_cuc_fruit": tom_cuc_fruit,
+        "herbs": herbs,
     }
 
     if args.target not in targets:
